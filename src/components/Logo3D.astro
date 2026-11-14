@@ -1,0 +1,50 @@
+---
+// The logo as a solid block. It is the outline from src/assets/logo.svg
+// drawn `layers` times, one behind the other: the front copy has the logo's
+// gradient, the ones behind go darker and make the sides.
+import raw from "../assets/logo.svg?raw";
+
+interface Props {
+  label: string;
+  /** The part of the SVG the outline fills: "x y width height". */
+  viewBox: string;
+  layers?: number;
+}
+
+const { label, viewBox, layers = 18 } = Astro.props;
+
+const gradient = (raw.match(/<linearGradient[\s\S]*?<\/linearGradient>/)?.[0] ?? "").replace(
+  /id="[^"]*"/,
+  'id="logo3d-gradient"',
+);
+const paths = (raw.match(/<path[\s\S]*?\/>/g) ?? [])
+  .map((path) => path.replace(/\s(?:id|class|fill)="[^"]*"/g, ""))
+  .join("");
+
+// Side colour, from the back (dark) to just behind the front.
+const from = [38, 104, 81];
+const to = [98, 179, 144];
+const side = (i: number) => {
+  const t = i / Math.max(1, layers - 2);
+  return `rgb(${from.map((c, k) => Math.round(c + (to[k] - c) * t)).join(" ")})`;
+};
+---
+
+<div class="logo3d" role="img" aria-label={label}>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <Fragment set:html={gradient} />
+      <g id="logo3d-shape" set:html={paths} />
+    </defs>
+  </svg>
+  <div class="logo3d-body" style={`--n:${layers - 1}`}>
+    {
+      Array.from({ length: layers }, (_, i) => (
+        <svg viewBox={viewBox} style={`--i:${i}`} aria-hidden="true">
+          <use href="#logo3d-shape" fill={i === layers - 1 ? "url(#logo3d-gradient)" : side(i)} />
+        </svg>
+      ))
+    }
+  </div>
+  <div class="logo3d-shadow"></div>
+</div>

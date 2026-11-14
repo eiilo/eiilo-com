@@ -1,0 +1,91 @@
+---
+import "@fontsource-variable/baloo-2/wght.css";
+import "../styles/global.css";
+import Logo from "../components/Logo.astro";
+import { site, nav, footer } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** "article" for updates. */
+  type?: "website" | "article";
+  noindex?: boolean;
+}
+
+const { title, description = site.description, type = "website", noindex = false } = Astro.props;
+const fullTitle = title ? `${title} | ${site.name}` : site.name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname;
+// "page" on the page itself, "true" on its section (Updates, on an update).
+const current = (href: string) =>
+  path === href ? "page" : href !== "/" && path.startsWith(href) ? "true" : undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="alternate" type="application/rss+xml" title="eiilo updates" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="eiilo games" href={`${site.games}rss.xml`} />
+    <link rel="alternate" type="application/rss+xml" title="eiilo blog" href={`${site.blog}rss.xml`} />
+    <meta name="theme-color" content="#171b2a" />
+    <script is:inline>
+      // No motion when the system asks for reduced motion. Runs before
+      // anything is drawn; motion.js follows the setting if it changes.
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("still");
+    </script>
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title ?? site.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="glow" aria-hidden="true"></div>
+    <header class="nav">
+      <div class="wrap">
+        <a class="nav-logo" href="/" aria-label="eiilo, home" aria-current={path === "/" ? "page" : undefined}>
+          <Logo />
+        </a>
+        <nav aria-label="Main">
+          <ul>
+            {nav.map((item) => <li><a href={item.path} aria-current={current(item.path)}>{item.name}</a></li>)}
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <script is:inline>
+      // The first screen is exactly the bar plus the hero: tell the CSS how
+      // tall the bar is (it wraps onto two lines on a narrow screen).
+      (() => {
+        const bar = document.querySelector(".nav");
+        const set = () => document.documentElement.style.setProperty("--nav-h", bar.offsetHeight + "px");
+        set();
+        new ResizeObserver(set).observe(bar);
+      })();
+    </script>
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="footer">
+      <div class="wrap">
+        <p>
+          &copy; Copyright {new Date().getFullYear()} <a class="brand" href="https://eiilo.com">eiilo</a>
+        </p>
+        <ul>
+          {footer.map((item) => <li><a href={item.path}>{item.name}</a></li>)}
+        </ul>
+      </div>
+    </footer>
+    <script>
+      import "../scripts/motion.js";
+    </script>
+  </body>
+</html>

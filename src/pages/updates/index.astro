@@ -1,0 +1,33 @@
+---
+import { render } from "astro:content";
+import Page from "../../layouts/Page.astro";
+import { getUpdates, formatDate, isoDate } from "../../data/content";
+
+const updates = await Promise.all(
+  (await getUpdates()).map(async (update) => ({ update, Content: (await render(update)).Content })),
+);
+---
+
+<Page title="Updates" description="Short news from eiilo: releases, new versions and changes." prose={false}>
+  {
+    updates.length === 0 ? (
+      <p class="empty">No updates yet.</p>
+    ) : (
+      <ol class="timeline" reversed>
+        {updates.map(({ update, Content }) => (
+          <li id={update.id} data-reveal>
+            <article class="card">
+              <time datetime={isoDate(update.data.date)}>{formatDate(update.data.date)}</time>
+              <h2>
+                <a href={`/updates/${update.id}/`}>{update.data.title}</a>
+              </h2>
+              <div class="prose">
+                <Content />
+              </div>
+            </article>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</Page>

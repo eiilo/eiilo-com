@@ -1,0 +1,8 @@
+---
+// The flat logo, inline, from src/assets/logo.svg.
+import raw from "../assets/logo.svg?raw";
+
+const svg = raw.replace(/<\?xml[^>]*\?>\s*/, "").replace("<svg ", '<svg role="img" aria-label="eiilo" ');
+---
+
+<Fragment set:html={svg} />

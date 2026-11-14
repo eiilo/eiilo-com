@@ -1,0 +1,1689 @@
+/* eiilo.com and games.eiilo.com share this stylesheet.
+   Same theme as the 2024 site: navy page, white Baloo 2 text, mint accents.
+   Colours, radii and depths are tokens: change them here. */
+
+:root {
+  --bg: #171b2a;
+  --surface: #1e2337;
+  --surface-2: #262c44;
+  --line: rgb(255 255 255 / 0.09);
+  --text: #ffffff;
+  --muted: #aab2ca;
+  --eiilo-primary: #7ae0b4;
+  --eiilo-secondary: #62b390;
+  --mint-light: #80e58b;
+  --mint-deep: #2f7c60;
+
+  --radius: 22px;
+  --radius-small: 14px;
+  --wrap: 72rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --column: 46rem;
+
+  /* Set by motion.js: pointer position, from -1 to 1. */
+  --px: 0;
+  --py: 0;
+
+  color-scheme: dark;
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Links within a page (the arrow under the hero) glide there. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  font-family: "Baloo 2 Variable", "Baloo 2", system-ui, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  overflow-x: clip;
+}
+
+main {
+  flex: 1;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+::selection {
+  color: white;
+  background: var(--eiilo-secondary);
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--eiilo-primary);
+  text-decoration-thickness: 0.09em;
+  text-underline-offset: 0.22em;
+  transition: color 0.2s linear;
+}
+
+a:hover {
+  color: var(--eiilo-primary);
+}
+
+:focus-visible {
+  outline: 3px solid var(--eiilo-primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+em {
+  font-style: normal;
+  font-weight: bold;
+  color: var(--eiilo-primary);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.3rem, 5.5vw, 3.6rem);
+  font-weight: 800;
+}
+
+h2 {
+  font-size: clamp(1.7rem, 3.2vw, 2.2rem);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--wrap) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: -5rem;
+  z-index: 30;
+  background: var(--eiilo-primary);
+  color: var(--bg);
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.skip:focus {
+  top: 0.6rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+main:focus {
+  outline: none;
+}
+
+
+/* A soft mint light that follows the pointer. */
+
+.glow {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    38rem circle at calc(50% + var(--px) * 50%) calc(50% + var(--py) * 50%),
+    rgb(122 224 180 / 0.1),
+    transparent 70%
+  );
+}
+
+/* Navigation bar */
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgb(23 27 42 / 0.72);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  border-bottom: 1px solid var(--line);
+}
+
+.nav .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 2rem;
+  padding-block: 0.8rem;
+}
+
+.nav-logo {
+  display: block;
+  transition: transform 0.25s ease-out;
+}
+
+.nav-logo:hover {
+  transform: scale(1.05) rotate(-1.5deg);
+}
+
+.nav-logo svg {
+  height: 2.1rem;
+  width: auto;
+}
+
+.nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.3rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav li a {
+  display: block;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.nav li a:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.nav li a[aria-current] {
+  background: rgb(122 224 180 / 0.16);
+  color: var(--eiilo-primary);
+}
+
+@media (max-width: 34rem) {
+  .nav .wrap {
+    justify-content: center;
+  }
+
+  .nav ul {
+    justify-content: center;
+  }
+
+  .nav .wrap {
+    padding-block: 0.5rem 0.3rem;
+    row-gap: 0;
+  }
+
+  /* Six links: two tidy rows of three rather than five and a stray one. */
+  .nav ul {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 0 0.2rem;
+    text-align: center;
+  }
+
+  .nav li a {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Footer */
+
+.footer {
+  margin-top: clamp(4rem, 10vw, 7rem);
+  border-top: 1px solid var(--line);
+  padding-block: 2rem 2.5rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.footer .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+}
+
+.footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.footer a {
+  display: inline-block;
+  padding-block: 0.4rem;
+  text-decoration-color: transparent;
+}
+
+.footer a:hover {
+  text-decoration-color: var(--eiilo-primary);
+}
+
+.footer .brand {
+  color: var(--eiilo-primary);
+}
+
+/* Buttons: chunky blocks you can press, like the logo's. */
+
+.btn {
+  --edge: var(--mint-deep);
+  display: inline-block;
+  /* Seen only when the system forces its own colours. */
+  border: 2px solid transparent;
+  padding: 0.55rem 1.4rem 0.45rem;
+  border-radius: var(--radius-small);
+  background: linear-gradient(120deg, var(--mint-light), var(--eiilo-primary));
+  color: var(--bg);
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 6px 0 var(--edge);
+  transform: translateY(0);
+  transition:
+    transform 0.12s ease-out,
+    box-shadow 0.12s ease-out;
+}
+
+.btn:hover {
+  color: var(--bg);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 0 var(--edge);
+}
+
+.btn:active {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 var(--edge);
+}
+
+.btn.is-quiet {
+  --edge: #10131f;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.btn.is-quiet:hover {
+  color: var(--eiilo-primary);
+}
+
+.btn.is-small {
+  padding: 0.3rem 0.95rem 0.2rem;
+  font-size: 1rem;
+  border-radius: 11px;
+  box-shadow: 0 4px 0 var(--edge);
+}
+
+.btn.is-small:hover {
+  box-shadow: 0 6px 0 var(--edge);
+}
+
+.btn.is-small:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--edge);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.1rem;
+}
+
+/* Hero */
+
+.hero {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* The bar and the hero together are exactly the first screen. --nav-h is
+     measured by a script in Base.astro; the fallbacks are close. */
+  min-height: calc(100vh - var(--nav-h, 4.2rem));
+  min-height: calc(100svh - var(--nav-h, 4.2rem));
+  padding-block: clamp(2.5rem, 6vh, 5rem) clamp(4rem, 9vh, 5.5rem);
+  text-align: center;
+  overflow: clip;
+}
+
+@media (max-width: 34rem) {
+  :root {
+    --nav-h: 6.4rem;
+  }
+}
+
+/* On a phone the products gather around the logo, some of them above it. */
+@media (max-width: 40rem) {
+  .hero {
+    padding-top: 5rem;
+  }
+}
+
+/* The way down from the hero. */
+.hero-next {
+  position: absolute;
+  left: 50%;
+  bottom: 0.6rem;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  color: var(--muted);
+  animation: nudge 2.4s ease-in-out infinite;
+}
+
+.hero-next:hover {
+  color: var(--eiilo-primary);
+  background: var(--surface-2);
+}
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(0.3rem);
+  }
+}
+
+.hero-inner {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.6rem, 4vw, 2.6rem);
+}
+
+.hero h1 {
+  font-size: clamp(1.6rem, 3.7vw, 2.5rem);
+  max-width: 24ch;
+}
+
+.hero .lede {
+  max-width: 34rem;
+  font-size: 1.25rem;
+  color: var(--muted);
+}
+
+.hero .buttons {
+  justify-content: center;
+}
+
+/* The logo as a solid block: copies of its outline stacked in depth.
+   It sways on its own, and follows the pointer once there is one. */
+
+.logo3d {
+  width: min(72vw, 44rem);
+  perspective: 1100px;
+}
+
+.hero.is-compact .logo3d {
+  width: min(64vw, 26rem);
+}
+
+/* A short screen (a phone on its side): the logo gives way to the text. */
+@media (max-height: 34rem) {
+  .logo3d {
+    width: min(42vw, 22rem);
+  }
+
+  .hero.is-compact .logo3d {
+    width: min(30vw, 14rem);
+  }
+
+  .hero-inner {
+    gap: 1rem;
+  }
+}
+
+.logo3d-body {
+  --step: clamp(1.6px, 0.34vw, 3.2px);
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--py) * -16deg)) rotateY(calc(var(--px) * 22deg));
+  animation: sway 9s ease-in-out infinite;
+}
+
+.tracking .logo3d-body {
+  animation: none;
+}
+
+.logo3d-body svg {
+  width: 100%;
+  overflow: visible;
+  transform: translateZ(calc((var(--i) - var(--n) / 2) * var(--step)));
+}
+
+.logo3d-body svg + svg {
+  position: absolute;
+  inset: 0;
+}
+
+.logo3d-shadow {
+  width: 86%;
+  height: 1.6rem;
+  margin: clamp(1rem, 3vw, 2rem) auto 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.55), transparent);
+  transform: translateX(calc(var(--px) * -1.2rem)) scaleX(calc(1 - var(--py) * 0.06));
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotateX(8deg) rotateY(-20deg);
+  }
+  50% {
+    transform: rotateX(-6deg) rotateY(20deg);
+  }
+}
+
+/* Blocks drifting behind the hero. */
+
+.cubes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  perspective: 900px;
+  /* Block sizes are in em, so this scales them all. */
+  font-size: 1rem;
+}
+
+/* Behind an inner page's title there is no room for the conversation. */
+.page-head .chat-thread {
+  display: none;
+}
+
+/* The stage: the 3D logo, and on a phone the cluster of products around
+   and behind it. */
+.hero-stage {
+  position: relative;
+}
+
+.hero-stage .logo3d {
+  position: relative;
+}
+
+.cubes.is-cluster {
+  display: none;
+}
+
+@media (max-width: 40rem) {
+  /* The spread layout gives way to the cluster where there is one... */
+  .hero:has(.is-cluster) > .cubes {
+    display: none;
+  }
+
+  .cubes.is-cluster {
+    display: block;
+    inset: -62% -9% -40%;
+    font-size: 0.6rem;
+  }
+
+  /* On a phone nothing behind the logo moves: no drifting, no spinning, and
+     the Mood Dude stands instead of hopping. Each thing rests in the same
+     pose it has under reduced motion. */
+  .cubes *,
+  .cubes *::before,
+  .cubes *::after {
+    animation: none !important;
+  }
+
+  .cubes .cube {
+    transform: rotateX(-20deg) rotateY(32deg) rotateZ(6deg);
+  }
+
+  .cubes .slab {
+    transform: rotateX(6deg) rotateY(-24deg);
+  }
+
+  .cubes .dude-sprite {
+    background-position-x: calc(var(--s) * -1);
+  }
+
+  /* ...and where there is none (behind an inner page's title), everything
+     is at least as blurred and faint as the things at the back. */
+  .page-head .cube-place {
+    opacity: min(var(--o), 0.7);
+    filter: blur(max(var(--blur), 2.5px));
+  }
+}
+
+/* A tablet, or a narrow window: everything smaller, and no conversation,
+   which would run into the logo. */
+@media (max-width: 68rem) {
+  .cubes {
+    font-size: 0.72rem;
+  }
+
+  .cubes .chat-thread {
+    display: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .cubes {
+    font-size: 0.55rem;
+  }
+
+  /* No room for the conversation or the devices: the logos stay. */
+  .cubes .chat-thread,
+  .cubes .device {
+    display: none;
+  }
+}
+
+.cube-place {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  opacity: var(--o);
+  filter: blur(var(--blur));
+  transform: translate(calc(var(--px) * var(--d) * -1px), calc(var(--py) * var(--d) * -1px));
+  perspective: 700px;
+}
+
+.cube-float {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: float var(--t) ease-in-out infinite alternate;
+  animation-delay: var(--delay);
+}
+
+.cube-float:has(> .dude) {
+  animation: none;
+}
+
+.cube {
+  --half: calc(var(--s) / 2);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: spin calc(var(--t) * 4) linear infinite;
+  animation-delay: var(--delay);
+}
+
+.cube i {
+  position: absolute;
+  inset: 0;
+  border-radius: 12%;
+  background: var(--eiilo-secondary);
+}
+
+.cube i:nth-child(1) {
+  transform: translateZ(var(--half));
+  background: linear-gradient(135deg, var(--mint-light), var(--eiilo-primary));
+}
+
+.cube i:nth-child(2) {
+  transform: rotateY(180deg) translateZ(var(--half));
+  background: #3f9274;
+}
+
+.cube i:nth-child(3) {
+  transform: rotateY(90deg) translateZ(var(--half));
+  background: #4fa784;
+}
+
+.cube i:nth-child(4) {
+  transform: rotateY(-90deg) translateZ(var(--half));
+  background: #57b48e;
+}
+
+.cube i:nth-child(5) {
+  transform: rotateX(90deg) translateZ(var(--half));
+  background: #9aefc9;
+}
+
+.cube i:nth-child(6) {
+  transform: rotateX(-90deg) translateZ(var(--half));
+  background: var(--mint-deep);
+}
+
+/* A block that carries a product's icon: the same picture on every face,
+   darkened on the faces that are turned away from the light. */
+.cube.has-icon i {
+  --shade: 0;
+  border-radius: 20%;
+  background:
+    linear-gradient(rgb(13 16 28 / var(--shade)), rgb(13 16 28 / var(--shade))),
+    var(--img) center / cover no-repeat,
+    var(--face);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+
+.cube.has-icon i:nth-child(2) {
+  --shade: 0.35;
+}
+
+.cube.has-icon i:nth-child(3),
+.cube.has-icon i:nth-child(4) {
+  --shade: 0.2;
+}
+
+.cube.has-icon i:nth-child(6) {
+  --shade: 0.5;
+}
+
+/* A slab: the icon cut out and given thickness, by stacking copies of it.
+   The copies behind the front one are darkened and make the edge. */
+.slab {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: turn calc(var(--t) * 0.9) ease-in-out infinite alternate;
+  animation-delay: var(--delay);
+}
+
+.slab.is-still {
+  animation: none;
+  transform: rotateX(8deg) rotateY(-22deg);
+}
+
+.slab i {
+  position: absolute;
+  inset: 0;
+  background: var(--img) center / contain no-repeat;
+  transform: translateZ(calc((var(--i) - 4) * var(--s) * 0.022));
+  filter: brightness(0.55);
+}
+
+.slab i:last-child {
+  filter: none;
+}
+
+@keyframes turn {
+  from {
+    transform: rotateX(10deg) rotateY(-42deg) rotateZ(-4deg);
+  }
+  to {
+    transform: rotateX(-6deg) rotateY(42deg) rotateZ(4deg);
+  }
+}
+
+/* A chat: the slab, and under it a short conversation that plays in a
+   loop. A message arrives, the other side types, replies, and a second
+   message arrives; then it clears. The messages have no words, only lines. */
+.chat {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.chat-thread {
+  --loop: 11s;
+  position: absolute;
+  left: 38%;
+  top: 96%;
+  width: 135%;
+  display: grid;
+  gap: calc(var(--s) * 0.07);
+  font-size: calc(var(--s) * 0.1);
+}
+
+.msg {
+  position: relative;
+  display: grid;
+  gap: 0.55em;
+  width: max-content;
+  margin: 0;
+  padding: 0.75em 0.9em;
+  border-radius: 1.2em;
+  opacity: 0;
+  animation: var(--loop) infinite both;
+}
+
+.msg b {
+  display: block;
+  height: 0.5em;
+  border-radius: 1em;
+}
+
+.msg.is-in {
+  justify-self: start;
+  background: #f4f7ff;
+  border-bottom-left-radius: 0.3em;
+  transform-origin: 0 100%;
+}
+
+.msg.is-in b {
+  background: #9db7ff;
+}
+
+.msg.is-out {
+  justify-self: end;
+  background: #2f6bff;
+  border-bottom-right-radius: 0.3em;
+  transform-origin: 100% 100%;
+}
+
+.msg.is-out b {
+  background: rgb(255 255 255 / 0.85);
+}
+
+.msg-1 {
+  animation-name: msg-1;
+}
+
+.msg-1 b:nth-child(1) {
+  width: 7em;
+}
+
+.msg-1 b:nth-child(2) {
+  width: 4.4em;
+}
+
+.msg-2 {
+  animation-name: msg-2;
+}
+
+.msg-2 b {
+  width: 5.2em;
+}
+
+.msg-3 {
+  animation-name: msg-3;
+}
+
+.msg-3 b:nth-child(1) {
+  width: 5.6em;
+}
+
+.msg-3 b:nth-child(2) {
+  width: 6.6em;
+}
+
+/* The typing dots sit where the reply will be. */
+.msg.is-typing {
+  grid-row: 2;
+  grid-column: 1;
+  grid-auto-flow: column;
+  gap: 0.4em;
+  animation-name: msg-typing;
+}
+
+.msg-2 {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.msg.is-typing b {
+  width: 0.5em;
+  animation: typing 0.9s ease-in-out infinite;
+}
+
+.msg.is-typing b:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.msg.is-typing b:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes msg-1 {
+  0%,
+  5% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  9%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes msg-typing {
+  0%,
+  22% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  26%,
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  42%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes msg-2 {
+  0%,
+  42% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  46%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes msg-3 {
+  0%,
+  62% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  66%,
+  90% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  95%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  30% {
+    transform: translateY(-0.3em);
+    opacity: 1;
+  }
+}
+
+/* Devices: the slab with three small 3D devices circling it, passing in
+   front of it and behind. They are built from boxes. Sizes are in --u, a
+   hundredth of the place's size. */
+.devices {
+  --u: calc(var(--s) * 0.01);
+  --turn: 16s;
+  --lilac: #a9a4ff;
+  --peri: #6e7bff;
+  --pale: #e8e6ff;
+  --ink: #2b338a;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.devices .slab {
+  width: 50%;
+  height: 50%;
+  margin: 25%;
+}
+
+/* The ring turns, tilted towards the viewer. Each arm holds one device out
+   at its angle (--a); `facing` turns the other way at the same speed, so a
+   device keeps its screen towards the viewer all the way round. */
+.ring,
+.arm,
+.facing,
+.device {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.ring {
+  animation: ring-turn var(--turn) linear infinite;
+}
+
+.arm {
+  transform: rotateY(var(--a)) translateZ(calc(var(--u) * 58));
+}
+
+.facing {
+  animation: ring-face var(--turn) linear infinite;
+}
+
+@keyframes ring-turn {
+  from {
+    transform: rotateX(-16deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(-16deg) rotateY(360deg);
+  }
+}
+
+@keyframes ring-face {
+  from {
+    transform: rotateY(calc(var(--a) * -1));
+  }
+  to {
+    transform: rotateY(calc(var(--a) * -1 - 360deg));
+  }
+}
+
+/* A box: six faces around its centre. --w, --h and --d are its width,
+   height and depth; --c its colour. */
+.box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.box i {
+  position: absolute;
+  background: var(--c);
+  border-radius: var(--r, calc(var(--u) * 1.4));
+  box-shadow: inset 0 0 0 100vmax rgb(13 16 28 / var(--shade, 0));
+}
+
+/* front, back */
+.box i:nth-child(1),
+.box i:nth-child(2) {
+  width: var(--w);
+  height: var(--h);
+  left: calc(var(--w) / -2);
+  top: calc(var(--h) / -2);
+}
+
+.box i:nth-child(1) {
+  transform: translateZ(calc(var(--d) / 2));
+}
+
+.box i:nth-child(2) {
+  --shade: 0.35;
+  transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+}
+
+/* right, left */
+.box i:nth-child(3),
+.box i:nth-child(4) {
+  --shade: 0.22;
+  width: var(--d);
+  height: var(--h);
+  left: calc(var(--d) / -2);
+  top: calc(var(--h) / -2);
+}
+
+.box i:nth-child(3) {
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
+}
+
+.box i:nth-child(4) {
+  transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
+}
+
+/* top, bottom */
+.box i:nth-child(5),
+.box i:nth-child(6) {
+  width: var(--w);
+  height: var(--d);
+  left: calc(var(--w) / -2);
+  top: calc(var(--d) / -2);
+}
+
+.box i:nth-child(5) {
+  transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
+}
+
+.box i:nth-child(6) {
+  --shade: 0.45;
+  transform: rotateX(-90deg) translateZ(calc(var(--h) / 2));
+}
+
+/* A lit screen on the front face. */
+.box.has-screen i:nth-child(1)::after {
+  content: "";
+  position: absolute;
+  inset: var(--bezel, 7%);
+  border-radius: calc(var(--u) * 0.8);
+  background: linear-gradient(155deg, #3a47d6, #141a5c 70%);
+}
+
+.device.is-phone {
+  transform: rotateX(10deg) rotateY(-28deg) rotateZ(10deg);
+}
+
+.device.is-phone .box {
+  --w: calc(var(--u) * 15);
+  --h: calc(var(--u) * 30);
+  --d: calc(var(--u) * 2.4);
+  --c: var(--peri);
+  --r: calc(var(--u) * 2.4);
+  --bezel: 5%;
+}
+
+.device.is-tablet {
+  transform: rotateX(12deg) rotateY(-30deg) rotateZ(-10deg);
+}
+
+.device.is-tablet .box {
+  --w: calc(var(--u) * 24);
+  --h: calc(var(--u) * 32);
+  --d: calc(var(--u) * 2);
+  --c: var(--pale);
+  --r: calc(var(--u) * 2.2);
+  --bezel: 6%;
+}
+
+/* The laptop: a flat base, and a lid standing at its far edge, leaning back. */
+.device.is-laptop {
+  transform: rotateX(-22deg) rotateY(32deg) rotateZ(-3deg);
+}
+
+.device.is-laptop .is-base {
+  --w: calc(var(--u) * 36);
+  --h: calc(var(--u) * 2);
+  --d: calc(var(--u) * 24);
+  --c: var(--lilac);
+}
+
+/* The keyboard, on the base's top face. */
+.device.is-laptop .is-base i:nth-child(5)::after {
+  content: "";
+  position: absolute;
+  inset: 12% 9% 38%;
+  border-radius: calc(var(--u) * 0.6);
+  background: var(--ink);
+}
+
+.device.is-laptop .is-lid {
+  --w: calc(var(--u) * 36);
+  --h: calc(var(--u) * 23);
+  --d: calc(var(--u) * 1.4);
+  --c: var(--lilac);
+  --bezel: 6%;
+  transform: translateY(calc(var(--u) * -1)) translateZ(calc(var(--u) * -12)) rotateX(-16deg)
+    translateY(calc(var(--u) * -11.5));
+}
+
+/* The Mood Dude. He stands still, and every three seconds hops and changes
+   mood at the top of the hop, as in the games. The strip has 42 frames, six
+   per mood: one of a jump (landing), four of standing, one of a jump
+   (taking off). Seven moods: the dude of the original game and Infinity in
+   green, blue and red, then the creatures of Adventures in green, blue, red
+   and yellow. The ground under him is always the colour of his mood, which
+   is the rule of the games. (scripts/dude-sheet.mjs builds the strip.) */
+.dude {
+  --frame: 0.5s;
+  width: 100%;
+}
+
+.dude-hop {
+  animation: dude-hop calc(var(--frame) * 6) infinite;
+}
+
+.dude-sprite {
+  width: var(--s);
+  height: var(--s);
+  background: var(--sheet) 0 0 / auto 100% no-repeat;
+  animation: dude-frames calc(var(--frame) * 42) steps(42) infinite;
+}
+
+.dude-ground {
+  height: calc(var(--s) * 0.16);
+  margin: calc(var(--s) * -0.04) 4% 0;
+  border-radius: calc(var(--s) * 0.05);
+  background: #6fd3a6;
+  box-shadow: inset 0 calc(var(--s) * -0.06) 0 rgb(13 16 28 / 0.28);
+  animation: dude-ground calc(var(--frame) * 42) step-end infinite;
+}
+
+@keyframes dude-frames {
+  to {
+    background-position-x: calc(var(--s) * -42);
+  }
+}
+
+/* A mood starts and ends at the top of the hop. */
+@keyframes dude-hop {
+  0% {
+    transform: translateY(-20%);
+    animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5);
+  }
+  16.6%,
+  83.4% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.1, 0.5, 0.5, 1);
+  }
+  100% {
+    transform: translateY(-20%);
+  }
+}
+
+@keyframes dude-ground {
+  0% {
+    background-color: #6fd3a6;
+  }
+  14.286% {
+    background-color: #8fb8ea;
+  }
+  28.571% {
+    background-color: #f3a2c0;
+  }
+  42.857% {
+    background-color: #5fd6a0;
+  }
+  57.143% {
+    background-color: #3fc8f4;
+  }
+  71.429% {
+    background-color: #f2574f;
+  }
+  85.714% {
+    background-color: #f6b93b;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotateX(-20deg) rotateY(0deg) rotateZ(8deg);
+  }
+  to {
+    transform: rotateX(-20deg) rotateY(360deg) rotateZ(8deg);
+  }
+}
+
+@keyframes float {
+  from {
+    transform: translateY(-0.7rem);
+  }
+  to {
+    transform: translateY(0.7rem);
+  }
+}
+
+/* Sections */
+
+.section {
+  margin-top: clamp(3.5rem, 9vw, 6rem);
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.3rem 2rem;
+  margin-bottom: 1.4rem;
+}
+
+.section-intro {
+  max-width: var(--column);
+  margin: -0.9rem 0 1.4rem;
+  color: var(--muted);
+}
+
+/* Cards. A card with data-tilt leans towards the pointer (motion.js sets
+   --rx, --ry, --mx and --my); what is inside can sit above its surface. */
+
+.cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 1.4rem;
+}
+
+.cards.is-wide {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+}
+
+.cards > li {
+  display: grid;
+  perspective: 1000px;
+}
+
+.card {
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 0%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: linear-gradient(160deg, var(--surface-2), var(--surface) 55%);
+  box-shadow: 0 1.2rem 2.5rem -1.5rem rgb(0 0 0 / 0.7);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.35s ease-out,
+    border-color 0.25s,
+    box-shadow 0.35s;
+}
+
+.card:hover,
+.card:focus-within {
+  border-color: rgb(122 224 180 / 0.45);
+  box-shadow:
+    0 1.8rem 3rem -1.5rem rgb(0 0 0 / 0.8),
+    0 0 2.5rem -0.8rem rgb(122 224 180 / 0.3);
+}
+
+.card.is-tilting {
+  transition:
+    border-color 0.25s,
+    box-shadow 0.35s;
+}
+
+/* The light on a tilting card. */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(18rem circle at var(--mx) var(--my), rgb(255 255 255 / 0.1), transparent 65%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card:hover::after {
+  opacity: 1;
+}
+
+/* Only .pop rises off the card. (A transform on the title would shrink
+   the link target below, which is sized to the card.) */
+.card .pop {
+  transform: translateZ(40px);
+}
+
+.card p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.card time {
+  color: var(--eiilo-primary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.card h3 a {
+  text-decoration: none;
+}
+
+/* The whole card is the link's target. */
+.card h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+}
+
+.card .buttons {
+  margin-top: auto;
+  padding-top: 0.7rem;
+  gap: 0.8rem;
+}
+
+.card .mark {
+  height: 5.2rem;
+  width: auto;
+  align-self: flex-start;
+  margin-bottom: 0.4rem;
+  filter: drop-shadow(0 0.6rem 0.7rem rgb(0 0 0 / 0.45));
+}
+
+.card.is-big {
+  padding: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+.card.is-big h3 {
+  font-size: 1.6rem;
+}
+
+/* Game cards */
+
+.game {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: 0.2rem 1.1rem;
+  align-items: start;
+}
+
+.game img {
+  grid-row: span 2;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 22%;
+  box-shadow: 0 0.7rem 1.2rem -0.3rem rgb(0 0 0 / 0.6);
+}
+
+.game .buttons {
+  grid-column: 1 / -1;
+}
+
+.group + .group {
+  margin-top: clamp(3rem, 7vw, 4.5rem);
+}
+
+/* Things rise into place the first time they are scrolled to.
+   motion.js adds .motion; without it everything is simply visible. */
+
+.motion [data-reveal] {
+  opacity: 0;
+  translate: 0 1.6rem;
+  transition:
+    opacity 0.6s ease-out,
+    translate 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  transition-delay: calc(var(--order, 0) * 70ms);
+}
+
+.motion [data-reveal].is-in {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Inner pages */
+
+.page-head {
+  position: relative;
+  padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(1.5rem, 4vw, 2.5rem);
+  text-align: center;
+  overflow: clip;
+}
+
+.page-head h1 {
+  position: relative;
+}
+
+.page-head .meta {
+  position: relative;
+  margin-top: 0.8rem;
+  color: var(--eiilo-primary);
+  font-weight: 600;
+}
+
+.column {
+  max-width: calc(var(--column) + 2 * var(--gutter));
+}
+
+.prose > * + * {
+  margin-top: 1em;
+}
+
+.prose h2 {
+  font-size: 1.6rem;
+  margin-top: 2em;
+}
+
+.prose h3 {
+  margin-top: 1.6em;
+}
+
+.prose h2 + *,
+.prose h3 + * {
+  margin-top: 0.4em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4em;
+  margin-bottom: 0;
+}
+
+.prose ul {
+  list-style: square;
+}
+
+.prose li + li {
+  margin-top: 0.35em;
+}
+
+.prose li::marker {
+  color: var(--eiilo-primary);
+}
+
+.prose blockquote {
+  margin-inline: 0;
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  border-left: 4px solid var(--eiilo-primary);
+  color: var(--muted);
+}
+
+.prose code {
+  font-size: 0.9em;
+  background: var(--surface-2);
+  border-radius: 6px;
+  padding: 0.1em 0.4em;
+}
+
+.prose pre {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-small);
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose img {
+  border-radius: var(--radius-small);
+}
+
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin-block: 2em;
+}
+
+.back {
+  margin-top: 3rem;
+}
+
+.year {
+  margin: 2.5rem 0 1rem;
+  color: var(--muted);
+  font-size: 1.3rem;
+}
+
+.year:first-child {
+  margin-top: 0;
+}
+
+/* Updates: a line of dated cards. */
+
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.6rem;
+  border-left: 3px solid var(--surface-2);
+  display: grid;
+  gap: 1.4rem;
+}
+
+.timeline > li {
+  position: relative;
+}
+
+.timeline > li::before {
+  content: "";
+  position: absolute;
+  left: calc(-1.6rem - 0.5rem - 1.5px);
+  top: 1.7rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 3px;
+  background: linear-gradient(135deg, var(--mint-light), var(--eiilo-primary));
+  box-shadow: 0 0 0 5px var(--bg);
+}
+
+.timeline .card h2 {
+  font-size: 1.4rem;
+}
+
+.timeline .card h2 a {
+  text-decoration: none;
+}
+
+.timeline .card .prose {
+  color: var(--muted);
+}
+
+.empty {
+  color: var(--muted);
+}
+
+/* Still: no motion at all. The page is in this state when the system asks
+   for reduced motion (the `still` class; see motion.js). Everything is shown
+   in a resting pose, nothing is hidden. */
+.still *,
+.still *::before,
+.still *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.still .logo3d-body {
+  transform: rotateX(6deg) rotateY(-16deg);
+}
+
+.still .cube {
+  transform: rotateX(-20deg) rotateY(32deg) rotateZ(6deg);
+}
+
+.still .slab {
+  transform: rotateX(6deg) rotateY(-24deg);
+}
+
+.still .ring {
+  transform: rotateX(-16deg) rotateY(28deg);
+}
+
+.still .facing {
+  transform: rotateY(calc(var(--a) * -1 - 28deg));
+}
+
+/* The dude stands (the strip's second frame) instead of hanging mid-jump. */
+.still .dude-sprite {
+  background-position-x: calc(var(--s) * -1);
+}
+
+/* The whole conversation, without the typing dots. */
+.still .msg {
+  opacity: 1;
+}
+
+.still .msg.is-typing {
+  display: none;
+}
+
+.still .glow {
+  background: radial-gradient(38rem circle at 50% 30%, rgb(122 224 180 / 0.1), transparent 70%);
+}
+
+.still .card {
+  transform: none;
+}
+
+/* Without the script above there is no `still` class: this is the fallback,
+   and stops what moves on its own. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  @view-transition {
+    navigation: none;
+  }
+}
+
+/* The system's own colours (Windows contrast themes): backgrounds are
+   dropped, so the decoration that is only background goes too. */
+@media (forced-colors: active) {
+  .cubes,
+  .glow,
+  .logo3d-shadow {
+    display: none;
+  }
+
+  .nav li a[aria-current] {
+    outline: 2px solid;
+  }
+}

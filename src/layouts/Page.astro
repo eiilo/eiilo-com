@@ -1,0 +1,36 @@
+---
+// Every page but the home page: a short header with the title, then the
+// content in a reading column. The header is plain: the drifting products
+// are only on the home page.
+// A Markdown file in src/pages picks it with `layout:` in its front matter.
+import Base from "./Base.astro";
+
+interface Props {
+  frontmatter?: { title: string; description?: string };
+  title?: string;
+  description?: string;
+  /** A line under the title, e.g. a date. */
+  meta?: string;
+  type?: "website" | "article";
+  noindex?: boolean;
+  /** false for pages that lay out their own content (lists of cards). */
+  prose?: boolean;
+}
+
+const title = Astro.props.frontmatter?.title ?? Astro.props.title;
+const description = Astro.props.frontmatter?.description ?? Astro.props.description;
+const { meta, type, noindex, prose = true } = Astro.props;
+---
+
+<Base title={title} description={description} type={type} noindex={noindex}>
+  <slot name="head" slot="head" />
+  <header class="page-head">
+    <div class="wrap">
+      <h1>{title}</h1>
+      {meta && <p class="meta">{meta}</p>}
+    </div>
+  </header>
+  <div class:list={["wrap", "column", { prose }]}>
+    <slot />
+  </div>
+</Base>

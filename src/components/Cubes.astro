@@ -1,0 +1,197 @@
+---
+// The products drifting behind a hero.
+//
+// Main products (`main: true`) are large and sharp and take the main
+// places; every other product is small, faint and blurred, further back.
+// Without `icons`, plain mint blocks drift there instead.
+//
+// A product's `kind` picks its shape:
+//   "cube"   a spinning block with the icon on every face (the default)
+//   "slab"   the icon itself as a thick cut-out that turns from side to
+//            side; for an icon with a shape of its own
+//   "chat"   a slab with a short made-up conversation next to it: a
+//            message arrives, someone types, a reply, another message
+//   "devices" the icon as a slab with three small 3D devices circling it
+//            (a laptop, a phone, a tablet), after the ones on mvpplease's
+//            own page
+//   "dude"   the Mood Dude standing on a strip of ground. Every few seconds
+//            he hops and changes mood in the air: first the dude of the
+//            original game and Infinity, then the creatures of Adventures.
+//            `icon` is not used.
+//
+// There are two layouts:
+//   "spread"   across the whole hero, main products sharp at the front.
+//              Hidden on a phone when the hero also has a cluster.
+//   "cluster"  for a phone: everything gathered close around the logo and
+//              blurred, main products included, so the logo and the text
+//              stay clear. It goes inside `.hero-stage`, around the 3D
+//              logo, and only shows on a narrow screen.
+//
+// Each place: where it is (x, y, in % of the hero, or of the stage for a
+// cluster), its size (s, in em), how far it moves with the pointer (d, in
+// px), how long one float takes (t), and how faint (o) and blurred it is.
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import dudeSheet from "../assets/floaters/mood-dude.webp";
+
+type Kind = "cube" | "slab" | "chat" | "devices" | "dude";
+type Place = { x: number; y: number; s: number; d: number; t: number; o?: number; blur?: number };
+
+interface Props {
+  /** "few" for the short heroes of inner pages. */
+  amount?: "many" | "few";
+  layout?: "spread" | "cluster";
+  icons?: { icon: ImageMetadata; bg?: string; kind?: Kind; main?: boolean }[];
+}
+
+const { amount = "many", layout = "spread", icons = [] } = Astro.props;
+const cluster = layout === "cluster";
+
+// Main products fill these in order. A main product beyond the last place
+// goes to the back with the others.
+const spreadMain: Place[] = [
+  { x: 4, y: 12, s: 6.2, d: 34, t: 7 },
+  { x: 81, y: 8, s: 7.6, d: 30, t: 9 },
+  { x: 9, y: 58, s: 6.6, d: 40, t: 10 },
+  { x: 86, y: 56, s: 6.2, d: 44, t: 8 },
+];
+const spreadBack: Place[] = [
+  { x: 90, y: 62, s: 3.6, d: 14, t: 8, o: 0.7, blur: 2 },
+  { x: 27, y: 5, s: 2.6, d: 9, t: 12, o: 0.6, blur: 2.5 },
+  { x: 60, y: 3, s: 2.8, d: 11, t: 9.5, o: 0.65, blur: 2.2 },
+  { x: 71, y: 80, s: 2.8, d: 10, t: 11, o: 0.6, blur: 2.5 },
+  { x: 1, y: 42, s: 2.4, d: 8, t: 13, o: 0.5, blur: 3 },
+  { x: 95, y: 34, s: 2.2, d: 7, t: 12.5, o: 0.5, blur: 3 },
+  { x: 30, y: 84, s: 2.2, d: 7, t: 14, o: 0.45, blur: 3.2 },
+];
+
+// The cluster: a loose ring around the logo, which covers its middle. Main
+// products are the larger ones along the top, where there is most room.
+const clusterMain: Place[] = [
+  { x: 3, y: 4, s: 5.6, d: 0, t: 7, o: 0.9, blur: 1.6 },
+  { x: 72, y: 0, s: 6.2, d: 0, t: 9, o: 0.9, blur: 1.6 },
+  { x: 37, y: 9, s: 5.6, d: 0, t: 10, o: 0.9, blur: 1.6 },
+  { x: 40, y: 70, s: 5, d: 0, t: 8, o: 0.85, blur: 1.8 },
+];
+const clusterBack: Place[] = [
+  { x: 22, y: 26, s: 3.4, d: 0, t: 8, o: 0.65, blur: 2.6 },
+  { x: 62, y: 28, s: 3.2, d: 0, t: 12, o: 0.65, blur: 2.6 },
+  { x: 90, y: 40, s: 2.8, d: 0, t: 9.5, o: 0.55, blur: 3 },
+  { x: -2, y: 44, s: 2.8, d: 0, t: 11, o: 0.55, blur: 3 },
+  { x: 14, y: 72, s: 3.2, d: 0, t: 13, o: 0.6, blur: 2.8 },
+  { x: 74, y: 72, s: 3.2, d: 0, t: 12.5, o: 0.6, blur: 2.8 },
+  { x: 48, y: 80, s: 2.6, d: 0, t: 14, o: 0.5, blur: 3.2 },
+];
+const mainPlaces = cluster ? clusterMain : spreadMain;
+const backPlaces = cluster ? clusterBack : spreadBack;
+
+const mains = icons.filter((product) => product.main).slice(0, mainPlaces.length);
+const others = icons.filter((product) => !mains.includes(product));
+const few = amount === "few";
+const scale = few ? 0.62 : 1;
+
+const dress = async (product: (typeof icons)[number] | undefined) =>
+  product && {
+    kind: product.kind ?? ("cube" as Kind),
+    bg: product.bg,
+    url: (await getImage({ src: product.icon, width: 256, height: 256 })).src,
+  };
+
+// With no products at all: plain blocks, in the back places.
+const front = mains.map((product, i) => ({ place: mainPlaces[i], product, isMain: true }));
+const back = (icons.length ? others : backPlaces.map(() => undefined))
+  .slice(0, few ? 2 : backPlaces.length)
+  .map((product, i) => ({ place: backPlaces[i], product, isMain: false }));
+
+const drifting = await Promise.all(
+  [...front, ...back].map(async ({ place, product, isMain }) => ({
+    place,
+    isMain,
+    thing: await dress(product),
+  })),
+);
+// Image URLs are quoted in the style attributes below: while developing,
+// they contain the project folder's path, which may have spaces in it.
+const slabLayers = Array.from({ length: 9 }, (_, i) => i);
+---
+
+<div class:list={["cubes", cluster && "is-cluster"]} aria-hidden="true">
+  {
+    drifting.map(({ place: c, thing, isMain }, i) => {
+      const kind = thing?.kind ?? "cube";
+      // The main places are sized for the special shapes; a plain cube
+      // there would be too heavy, so it is drawn a little smaller.
+      const size = c.s * scale * (isMain && kind === "cube" ? 0.78 : 1);
+      const place = `--x:${c.x}%;--y:${c.y}%;--s:${size}em;--d:${c.d};--t:${c.t}s;--o:${c.o ?? 1};--blur:${c.blur ?? 0}px;--delay:${-i * 1.7}s`;
+      const skin = thing ? `--img:url('${thing.url}');--face:${thing.bg ?? "#d9eef2"}` : undefined;
+      return (
+        <div class="cube-place" style={place}>
+          <div class="cube-float">
+            {kind === "cube" && (
+              <div class:list={["cube", { "has-icon": thing }]} style={skin}>
+                <i /><i /><i /><i /><i /><i />
+              </div>
+            )}
+            {kind === "slab" && (
+              <div class="slab" style={skin}>
+                {slabLayers.map((n) => <i style={`--i:${n}`} />)}
+              </div>
+            )}
+            {kind === "chat" && (
+              <div class="chat" style={skin}>
+                <div class="slab">
+                  {slabLayers.map((n) => <i style={`--i:${n}`} />)}
+                </div>
+                <div class="chat-thread">
+                  <p class="msg is-in msg-1"><b /><b /></p>
+                  <p class="msg is-out msg-2"><b /></p>
+                  <p class="msg is-out is-typing"><b /><b /><b /></p>
+                  <p class="msg is-in msg-3"><b /><b /></p>
+                </div>
+              </div>
+            )}
+            {kind === "devices" && (
+              <div class="devices" style={skin}>
+                <div class="slab is-still">
+                  {slabLayers.map((n) => <i style={`--i:${n}`} />)}
+                </div>
+                <div class="ring">
+                  <div class="arm" style="--a:0deg">
+                    <div class="facing">
+                      <div class="device is-laptop">
+                        <div class="box is-base"><i /><i /><i /><i /><i /><i /></div>
+                        <div class="box is-lid has-screen"><i /><i /><i /><i /><i /><i /></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="arm" style="--a:120deg">
+                    <div class="facing">
+                      <div class="device is-phone">
+                        <div class="box has-screen"><i /><i /><i /><i /><i /><i /></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="arm" style="--a:240deg">
+                    <div class="facing">
+                      <div class="device is-tablet">
+                        <div class="box has-screen"><i /><i /><i /><i /><i /><i /></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {kind === "dude" && (
+              <div class="dude" style={`--sheet:url('${dudeSheet.src}')`}>
+                <div class="dude-hop">
+                  <div class="dude-sprite" />
+                </div>
+                <div class="dude-ground" />
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    })
+  }
+</div>

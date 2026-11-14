@@ -1,0 +1,71 @@
+---
+import Base from "../layouts/Base.astro";
+import Logo3D from "../components/Logo3D.astro";
+import Cubes from "../components/Cubes.astro";
+import EntryCards from "../components/EntryCards.astro";
+import { site } from "../data/site";
+import { products } from "../data/products";
+import { getUpdates } from "../data/content";
+
+const updates = (await getUpdates()).slice(0, 3);
+---
+
+<Base>
+  <section class="hero">
+    <Cubes icons={products} />
+    <div class="wrap hero-inner">
+      <div class="hero-stage">
+        <Cubes layout="cluster" icons={products} />
+        <Logo3D label="eiilo" viewBox="228 430 530 144" />
+      </div>
+      <h1>We make <em>fun</em> games and <em>great</em> software</h1>
+      <p class="buttons">
+        <a class="btn" href="/about/">About eiilo</a>
+        <a class="btn is-quiet" href="/updates/">Latest updates</a>
+      </p>
+    </div>
+    <a class="hero-next" href="#make" aria-label="Go to What we make">
+      <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+        <path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </a>
+  </section>
+
+  <div class="wrap">
+    <section class="section" aria-labelledby="make">
+      <div class="section-head">
+        <h2 id="make">What we make</h2>
+      </div>
+      <ul class="cards is-wide">
+        <li data-reveal>
+          <article class="card is-big" data-tilt>
+            <img class="mark pop" src="/logo-games.svg" alt="eiilo games" width="816" height="368" />
+            <h3><a href={site.games}>Games</a></h3>
+            <p>
+              Small mobile games: platformers, arcade games, a rhythm game and a few strange simulations. They are free
+              on Google Play.
+            </p>
+          </article>
+        </li>
+        <li data-reveal style="--order:1">
+          <article class="card is-big" data-tilt>
+            <img class="mark pop" src="/logo-apps.svg" alt="eiilo apps" width="684" height="368" />
+            <h3><a href="/about/">Apps</a></h3>
+            <p>
+              Communication and productivity software that is fun and easy to use, and that respects your privacy and
+              your data. In the works.
+            </p>
+          </article>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section" aria-labelledby="updates">
+      <div class="section-head">
+        <h2 id="updates">Updates</h2>
+        <a href="/updates/">All updates</a>
+      </div>
+      <EntryCards entries={updates} base="/updates/" empty="No updates yet." />
+    </section>
+  </div>
+</Base>

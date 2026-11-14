@@ -1,0 +1,19 @@
+---
+import { render } from "astro:content";
+import Page from "../../layouts/Page.astro";
+import { getUpdates, formatDate } from "../../data/content";
+
+export async function getStaticPaths() {
+  return (await getUpdates()).map((update) => ({ params: { id: update.id }, props: { update } }));
+}
+
+const { update } = Astro.props;
+const { Content } = await render(update);
+const date = formatDate(update.data.date);
+---
+
+<Page title={update.data.title} description={`An update from eiilo, ${date}.`} meta={date} type="article">
+  <meta slot="head" property="article:published_time" content={update.data.date.toISOString()} />
+  <Content />
+  <p class="back"><a class="btn is-quiet is-small" href="/updates/">All updates</a></p>
+</Page>

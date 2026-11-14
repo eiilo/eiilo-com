@@ -1,0 +1,52 @@
+---
+import Page from "../layouts/Page.astro";
+import { site, nav, footer } from "../data/site";
+import { getUpdates } from "../data/content";
+
+const updates = await getUpdates();
+const pages = [...nav, ...footer.filter((item) => item.path !== "/sitemap/" && item.path !== "/rss.xml")];
+
+// The other eiilo sites keep their own sitemap and feed.
+const sites = [
+  { name: "eiilo.com", url: "https://eiilo.com/", feed: "the updates" },
+  { name: "games.eiilo.com", url: site.games, feed: "the games" },
+  { name: "blog.eiilo.com", url: site.blog, feed: "the blog posts" },
+];
+---
+
+<Page title="Sitemap" description="Every page on eiilo.com, and the sitemaps and feeds of every eiilo site.">
+  <ul>
+    {
+      pages.map((page) => (
+        <li>
+          <a href={page.path}>{page.name}</a>
+          {page.path === site.games && (
+            <ul>
+              <li><a href={`${site.games}sitemap/`}>Sitemap of games.eiilo.com</a></li>
+            </ul>
+          )}
+          {page.path === site.blog && (
+            <ul>
+              <li><a href={`${site.blog}sitemap/`}>Sitemap of blog.eiilo.com</a></li>
+            </ul>
+          )}
+          {page.path === "/updates/" && updates.length > 0 && (
+            <ul>
+              {updates.map((update) => <li><a href={`/updates/${update.id}/`}>{update.data.title}</a></li>)}
+            </ul>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+
+  <h2>RSS feeds</h2>
+  <ul>
+    {sites.map((s) => <li><a href={`${s.url}rss.xml`}>{s.name}</a>: {s.feed}</li>)}
+  </ul>
+
+  <h2>Sitemaps for search engines</h2>
+  <ul>
+    {sites.map((s) => <li><a href={`${s.url}sitemap-index.xml`}>{s.name}</a> (XML)</li>)}
+  </ul>
+</Page>

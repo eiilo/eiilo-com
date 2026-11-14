@@ -1,0 +1,32 @@
+---
+import { formatDate, isoDate } from "../data/content";
+
+interface Props {
+  entries: { id: string; data: { title: string; date: Date; description?: string } }[];
+  /** URL prefix, "/blog/" or "/updates/". */
+  base: string;
+  empty: string;
+}
+
+const { entries, base, empty } = Astro.props;
+---
+
+{
+  entries.length === 0 ? (
+    <p class="empty">{empty}</p>
+  ) : (
+    <ul class="cards">
+      {entries.map((entry, i) => (
+        <li data-reveal style={`--order:${i % 3}`}>
+          <article class="card" data-tilt>
+            <time datetime={isoDate(entry.data.date)}>{formatDate(entry.data.date)}</time>
+            <h3>
+              <a href={`${base}${entry.id}/`}>{entry.data.title}</a>
+            </h3>
+            {entry.data.description && <p>{entry.data.description}</p>}
+          </article>
+        </li>
+      ))}
+    </ul>
+  )
+}
